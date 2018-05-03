@@ -22,16 +22,15 @@ $(document).ready(function () {
   $('.schedule').load('schedule.php' + query, function () {
     var studentName = $('.mainlabel').text();
     $('.mainlabel').replaceWith('<div class="dropdown"><span class="dropdown-toggle dropdown-cursor mainlabel center" type="button" data-toggle="dropdown">' + studentName + '&nbsp;<span class="caret"></span></span><ul class="dropdown-menu"><li><a data-toggle="modal" data-target="#settings"><i class="fa fa-sliders"></i>&nbsp;&nbsp;Settings</a></li><li><a href="update.html"><i class="fa fa-gift"></i>&nbsp;&nbsp;Updates</a></li><li><a href="mailto:pengt@catlin.edu"><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;Email Tristan</a></li></ul>');
-    $('.specialday > a').each(function () {
-      specialHref = $(this).attr('href');
-      splitSH = specialHref.split('&');
-      specialUseful = splitSH[3];
-      splitQuery = query.split('&');
-      query1 = splitQuery[0].substring(1);
-      query2 = splitQuery[1];
-      specialHTML = $(this).load('schedule.php?' + query1 + '&' + query2 + '&range=today&' + specialUseful)[0].outerHTML;
-      console.log(specialHTML);
-    });
+    // $('.specialday > a').each(function () {
+    //   specialHref = $(this).attr('href');
+    //   splitSH = specialHref.split('&');
+    //   specialUseful = splitSH[3];
+    //   splitQuery = query.split('&');
+    //   query1 = splitQuery[0].substring(1);
+    //   query2 = splitQuery[1];
+    //   specialHTML = $(this).load('schedule.php?' + query1 + '&' + query2 + '&range=today&' + specialUseful)[0].outerHTML;
+    // });
     $('.controls').remove();
     $('.specialday').each(function () {
       $(this).children('table:first').children('tbody:first').children('tr:first').remove();
@@ -42,26 +41,26 @@ $(document).ready(function () {
       bgcolor = $(this).attr('bgcolor');
       switch (bgcolor) {
         case '#FFCE51':
-          $(this).addClass('block-1');
-          break;
+        $(this).addClass('block-1');
+        break;
         case '#A67FB9':
-          $(this).addClass('block-2');
-          break;
+        $(this).addClass('block-2');
+        break;
         case '#E67326':
-          $(this).addClass('block-3');
-          break;
+        $(this).addClass('block-3');
+        break;
         case '#00ABBD':
-          $(this).addClass('block-4');
-          break;
+        $(this).addClass('block-4');
+        break;
         case '#AAC02C':
-          $(this).addClass('block-5');
-          break;
+        $(this).addClass('block-5');
+        break;
         case '#EF4957':
-          $(this).addClass('block-6');
-          break;
+        $(this).addClass('block-6');
+        break;
         case '#FF75F2':
-          $(this).addClass('block-7');
-          break;
+        $(this).addClass('block-7');
+        break;
       }
     });
     var block;
