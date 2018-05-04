@@ -9,8 +9,7 @@
     <!-- style.css --><link rel='stylesheet' href='style.css'/>
     <!-- JS -->
     <!-- jQuery --><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- React --><script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <!-- ReactDOM --><script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <!-- Moment --><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
     <!-- Popper.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <!-- JS Bootstrap --><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <!-- script.js --><script type='text/javascript' src='script.js'></script>
@@ -18,11 +17,12 @@
     <link rel="shortcut icon" type="image/x-icon" href="/imgs/favicon.ico">
     <title>CGS Schedule</title>
   </head>
-  <body>
+  <body class="container-fluid">
     <div class="schedule">
       <?php
         echo file_get_contents('https://inside.catlin.edu/scripts/sched/index.php' . strchr($_SERVER['REQUEST_URI'], "?"));
       ?>
     </div>
+    <div class="control"></div>
   </body>
 </html>
