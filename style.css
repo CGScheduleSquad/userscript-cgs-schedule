@@ -11,3 +11,6 @@ body{
 .schedule{
   height: 90vh;
 }
+.special{
+  display: none;
+}
