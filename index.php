@@ -14,7 +14,7 @@
     <!-- JS Bootstrap --><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <!-- script.js --><script type='text/javascript' src='script.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="/imgs/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="https://inside.catlin.edu/images/favicon.ico">
     <title>CGS Schedule</title>
   </head>
   <body class="container-fluid">
