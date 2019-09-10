@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Veracross CGS Schedule
-// @version      0.16
+// @version      0.16.1
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
 // @namespace    https://github.com/Kizjkre/catlin-schedule
@@ -58,7 +58,7 @@ let head = `
                 color: black;
             }
 
-            .daylabel a: visited {
+            .daylabel a:visited {
                 color: black;
             }
 
@@ -233,14 +233,14 @@ let head = `
                 border-style: none;
                 width: 100%;
                 max-height: 5%;
-                padding: 0px;
-                margin: 0px;
+                padding: 0;
+                margin: 0;
             }
 
             hr.controls {
                 width: 100%;
-                padding: 0px;
-                margin: 0px;
+                padding: 0;
+                margin: 0;
             }
 
             td.controls {
@@ -249,8 +249,8 @@ let head = `
                 width: 20%;
                 font-family: "sans-serif";
                 font-weight: bold;
-                padding: 0px;
-                margin: 0px;
+                padding: 0;
+                margin: 0;
             }
 
             td.controls.arrows {
@@ -410,10 +410,22 @@ let schedule = `
   </body>
 `;
 
+const dateToVeracrossDate = date => {
+  return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-');
+};
+
+const addSpecialDay = (text, bgcolor, link = '') => {
+  $('table.sched.main > tbody > tr:nth-child(2)').append(`
+    <td rowspan="12" class="specialday" style="background: ${ bgcolor }">
+      <a ${ (link === '' ? '' : `href=${ link }`) } class="coursename">${ text }</a>
+    </td>
+  `);
+};
+
 const appendDay = daySchedule => {
     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    $('table.sched.main > tbody > tr:nth-child(' + 1 + ')').append(`
+    $('table.sched.main > tbody > tr:nth-child(1)').append(`
     <td class="daylabel">
       <a href="/catlin/student/student/daily-schedule?date=${ dateToVeracrossDate(daySchedule.date) }">
         <b>
@@ -448,6 +460,27 @@ const applyCustomRules = daySchedule => {
     return daySchedule;
 };
 
+const getVeracrossWeekDateStrings = mondayDate => {
+  let dates = [];
+  for (let i = 0; i < 5; i++) {
+    dates.push(dateToVeracrossDate(mondayDate));
+    mondayDate.setDate(mondayDate.getDate() + 1);
+  }
+  return dates;
+};
+
+const getLastFriday = date => {
+  let d = new Date(date);
+  let day = d.getDay();
+
+  d.setDate(d.getDate() - (day <= 5) ? (7 - 5 + day) : (day - 5));
+  d.setHours(0);
+  d.setMinutes(0);
+  d.setSeconds(0);
+
+  return d;
+};
+
 if (window.location.href.match(/legacy/)) {
     $('head').html(head);
     $('body').html(schedule);
@@ -468,9 +501,13 @@ if (window.location.href.match(/legacy/)) {
         $('table').show();
     });
 
-    $('td.arrows a').first().prop('href', '?date=' + dateToVeracrossDate(previousMonday));
-    $('td.arrows a').last().prop('href', '?date=' + dateToVeracrossDate(nextMonday));
-    $('td.controls.links a').last().prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
+    $('td.arrows a')
+      .first()
+      .prop('href', `?date=${ dateToVeracrossDate(previousMonday) }`)
+      .last()
+      .prop('href', `?date=${ dateToVeracrossDate(nextMonday) }`)
+      .last()
+      .prop('href', `/catlin/student/student/daily-schedule?date=${ dateToVeracrossDate(seedDate) }`);
     window.onload = () => $('body > .dialog').remove();
 } else {
     window.onload = () => $('div.vx-Tabs').append(`
@@ -483,83 +520,55 @@ if (window.location.href.match(/legacy/)) {
   `);
 }
 
-function getVeracrossWeekDateStrings(mondayDate) {
-    let dates = [];
-    for (let i = 0; i < 5; i++) {
-        dates.push(dateToVeracrossDate(mondayDate));
-        mondayDate.setDate(mondayDate.getDate() + 1);
-    }
-    return dates;
-}
+const addInlineDay = daySchedule => {
+  $('table.sched.main > tbody > tr:nth-child(2)').append(`
+    <td rowspan="12" class="specialday" style="border-top-style: solid; border-right-style: solid; border-bottom: 0px; border-left-style: solid;"><table class="sched week special"><tbody>
+  `);
 
+  daySchedule.blocks[0].startTime.getTime() !== normalTimes[0].getTime() &&
+    daySchedule.blocks.unshift({ 'startTime': normalTimes[0], 'title': 'Late Start', 'subtitle': '', 'rowSpan': 1 });
 
-function getLastFriday(date) {
-    var d = new Date(date),
-        day = d.getDay(),
-        diff = (day <= 5) ? (7 - 5 + day) : (day - 5);
+  daySchedule.blocks.forEach((block, i) => {
+    block.endTime = i === daySchedule.blocks.length - 1 ? schoolEndTime : daySchedule.blocks[i + 1].startTime;
+    block.mins = Math.min(Math.max(new Date(block.endTime.getTime() - block.startTime.getTime()).getTime() / 1000 / 60, 5), 90);
+  });
 
-    d.setDate(d.getDate() - diff);
-    d.setHours(0);
-    d.setMinutes(0);
-    d.setSeconds(0);
+  daySchedule.blocks.forEach((block) => {
+    let minsClass = `mins${ block.mins }`;
 
-    return d;
-}
-
-function dateToVeracrossDate(date) {
-    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
-}
-
-function addSpecialDay(text, bgcolor, link = "") {
-    $("table.sched.main > tbody > tr:nth-child(" + 2 + ")").append("<td rowspan=" + 12 + " bgcolor=" + bgcolor + " class=\"specialday\"><a " + (link === "" ? "" : "href=" + link) + " class=\"coursename\">" + text + "</a></td>");
-}
-
-function addInlineDay(daySchedule) {
-    $("table.sched.main > tbody > tr:nth-child(" + 2 + ")").append("<td rowspan=" + 12 + " class=\"specialday\" style=\"border-top-style: solid; border-right-style: solid; border-bottom: 0px; border-left-style: solid;\"><table class=\"sched week special\"><tbody>");
-
-    if (daySchedule.blocks[0].startTime.getTime() !== normalTimes[0].getTime()) {
-        daySchedule.blocks.unshift({"startTime": normalTimes[0], "title": "Late Start", "subtitle": "", "rowSpan": 1});
+    if (block.title === 'Late Start') {
+      $('.special tbody').last().append(`
+        <tr class=${ minsClass }>
+          <td colspan="2" class="period ${ minsClass } specialperiod" style="background: ${ colorDict.free };">
+            <span class="coursename">${ block.title }</span>
+            <br>
+          </td>
+        </tr>
+      `);
+      return null;
     }
 
-    daySchedule.blocks.forEach((block, index) => {
-        if (index === daySchedule.blocks.length - 1) {
-            block.endTime = schoolEndTime;
-        } else {
-            block.endTime = daySchedule.blocks[index + 1].startTime;
-        }
-        block.mins = Math.min(Math.max(new Date(block.endTime.getTime() - block.startTime.getTime()).getTime() / 1000 / 60, 5), 90);
-    });
-
-    let tableBody = $(".special tbody").last();
-    daySchedule.blocks.forEach((block) => {
-        let minsClass = "mins" + block.mins;
-
-        if (block.title === "Late Start") {
-            tableBody.append("<tr class=" + minsClass + "><td colspan=\"2\" bgcolor=" + colorDict["free"] + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span><br></td>\r\n</tr>");
-            return;
-        }
-
-        let timeRange = format12HourTime(block.startTime) + "-" + format12HourTime(block.endTime);
+    let timeRange = `${ format12HourTime(block.startTime) }-${ format12HourTime(block.endTime) }`;
 
 
-        // start duplicate
-        let smallBlock = block.title === block.subtitle || block.subtitle === "" || block.title === "US C&C";
-        let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
-        let bgcolor = colorDict[0];
-        if (blockNumMatchAttempt !== null) {
-            bgcolor = colorDict[parseInt(blockNumMatchAttempt[0].slice(-1))];
-        } else if (block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null) {
-            bgcolor = colorDict["free"];
-        }
-        if (block.free !== true) {
-            block.title = block.title.split(" - ")[0];
-            block.subtitle = block.subtitle.split(" • ").slice(-2).reverse().join(" - ").replace("US ", "Blk ").replace(" Long", "");
-        }
-        // end duplicate
+    // start duplicate
+    let smallBlock = block.title === block.subtitle || block.subtitle === '' || block.title === 'US C&C';
+    let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
+    let bgcolor = colorDict[0];
+    if (blockNumMatchAttempt !== null) {
+        bgcolor = colorDict[parseInt(blockNumMatchAttempt[0].slice(-1))];
+    } else if (block.free || !!block.subtitle.match(/Break/) || block.subtitle.match(/Lunch/)) {
+        bgcolor = colorDict.free;
+    }
+    if (block.free !== true) {
+        block.title = block.title.split(" - ")[0];
+        block.subtitle = block.subtitle.split(" • ").slice(-2).reverse().join(" - ").replace("US ", "Blk ").replace(" Long", "");
+    }
+    // end duplicate
 
-        tableBody.append("<tr class=" + minsClass + ">\r\n<td class=\"times " + minsClass + "\">" + timeRange + "</td>\r\n<td rowspan=\"1\" bgcolor=" + bgcolor + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span>" + (smallBlock ? "" : "<br>") + "<span class=\"subtitle\">" + (smallBlock ? "" : block.subtitle) + "</span><br></td>\r\n</tr>");
-    });
-}
+    $('.special tbody').last().append("<tr class=" + minsClass + ">\r\n<td class=\"times " + minsClass + "\">" + timeRange + "</td>\r\n<td rowspan=\"1\" bgcolor=" + bgcolor + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span>" + (smallBlock ? "" : "<br>") + "<span class=\"subtitle\">" + (smallBlock ? "" : block.subtitle) + "</span><br></td>\r\n</tr>");
+  });
+};
 
 function format12HourTime(date) {
     return ((date.getHours() - 1) % 12 + 1) + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
