@@ -553,8 +553,8 @@ function addInlineDay(daySchedule) {
         } else if (block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null) {
             bgcolor = colorDict["free"];
         }
-        if (block.free != true) {
-            block.title = block.title.split(" - ")[0]
+        if (block.free !== true) {
+            block.title = block.title.split(" - ")[0];
             block.subtitle = block.subtitle.split(" • ").slice(-2).reverse().join(" - ").replace("US ", "Blk ").replace(" Long", "");
         }
         // end duplicate
@@ -572,7 +572,7 @@ function addTableData(daySchedule) {
         let normalTimeIndex = 1;
         normalTimes.some((time) => {
             normalTimeIndex++;
-            return block.startTime.getHours() == time.getHours() && block.startTime.getMinutes() == time.getMinutes();
+            return block.startTime.getHours() === time.getHours() && block.startTime.getMinutes() === time.getMinutes();
         });
         let smallBlock = block.title === block.subtitle || block.subtitle === "" || block.title === "US C&C";
         let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
@@ -582,8 +582,8 @@ function addTableData(daySchedule) {
         } else if (block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null) {
             bgcolor = colorDict["free"];
         }
-        if (block.free != true) {
-            block.title = block.title.split(" - ")[0]
+        if (block.free !== true) {
+            block.title = block.title.split(" - ")[0];
             block.subtitle = block.subtitle.split(" • ").slice(-2).reverse().join(" - ").replace("US ", "Blk ").replace(" Long", "");
         }
         $("table.sched.main > tbody > tr:nth-child(" + normalTimeIndex + ")").append("<td rowspan=" + block.rowSpan + " bgcolor=" + bgcolor + " class=\"period mins" + block.mins + "\"><span class=\"coursename\">" + block.title + "</span>" + (smallBlock ? "" : "<br>") + "<span class=\"subtitle\">" + (smallBlock ? "" : block.subtitle) + "</span><br></td>");
@@ -591,10 +591,10 @@ function addTableData(daySchedule) {
 }
 
 function prepTableDataDay(daySchedule) {
-    let newBlocks = []
+    let newBlocks = [];
     normalTimes.forEach((time) => {
         let blockWithTime = daySchedule.blocks.find((block) => {
-            return block.startTime.getTime() == time.getTime()
+            return block.startTime.getTime() === time.getTime()
         });
         if (blockWithTime === undefined) {
             newBlocks.push(null);
@@ -645,7 +645,7 @@ function trimDay(daySchedule) {
             return false;
         }
         return !daySchedule.blocks.some((otherBlock) => { // keep longer description one (TODO show conflict)
-            let sameTime = block.startTime.getTime() == otherBlock.startTime.getTime();
+            let sameTime = block.startTime.getTime() === otherBlock.startTime.getTime();
             if (sameTime) deleteNextSameTime = true;
             return sameTime && (block.title.length < otherBlock.title.length || block.subtitle.length < otherBlock.subtitle.length);
         });
@@ -661,19 +661,19 @@ function isNormalDay(daySchedule) {
             return true;
         }
         return normalTimes.some((time) => {
-            return startHours == time.getHours() && startMinutes == time.getMinutes();
+            return startHours === time.getHours() && startMinutes === time.getMinutes();
         });
     });
 }
 
 function isEmptyDay(daySchedule) {
-    return daySchedule.blocks.length == 0;
+    return daySchedule.blocks.length === 0;
 }
 
 function getScheduleForDate(dateString) {
     return new Promise(function (resolve, reject) {
         $.get("https://portals.veracross.com/catlin/student/student/daily-schedule?date=" + dateString, function (data) {
-            let arr = []
+            let arr = [];
             $(data).find(".schedule .schedule-item").each((index, value) => {
                 let timeString = $(value).find(".item-time").text().replace("NOW", "").trim();
                 let startTime = parseVeracrossDate(timeString);
@@ -681,7 +681,7 @@ function getScheduleForDate(dateString) {
                 let subtitle = $(value).find(".item-subtitle").text().trim();
                 arr.push({"startTime": startTime, "title": title, "subtitle": subtitle, "rowSpan": 1})
             });
-            let splitDate = dateString.split("-")
+            let splitDate = dateString.split("-");
             let date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
             let letter = $(data).find(".rotation-day-header").text().trim().slice(-1);
             if (mainlabel === "") {
@@ -699,9 +699,9 @@ function parseVeracrossDate(timeString) {
         timeString = timeString.replace(" am", "")
     }
     if (timeString.includes("pm")) {
-        timeString = timeString.replace(" pm", "")
+        timeString = timeString.replace(" pm", "");
         isPm = true;
     }
     let splitString = timeString.split(":");
-    return new Date(0, 0, 0, parseInt(splitString[0]) + (isPm && parseInt(splitString[0]) != 12 ? 12 : 0), parseInt(splitString[1]));
+    return new Date(0, 0, 0, parseInt(splitString[0]) + (isPm && parseInt(splitString[0]) !== 12 ? 12 : 0), parseInt(splitString[1]));
 }
