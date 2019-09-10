@@ -1,6 +1,11 @@
 # Veracross CGS Schedule
 Userscript to bring the old CGS schedule view to the Veracross student schedule
 
+## Disclaimer
+- Start times for events *should* be accurate. End times are **estimates only** since Veracross does not provide end times.
+- The schedule does **NOT** show events before 8:00am and after 3:15pm
+- We are **NOT** responsible if you miss classes because the schedule was not accurate
+
 ## Getting Started
 - If you're using Google Chrome*, install the [tampermonkey addon from the Chrome Web Store](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en)
 - Install the userscript by clicking the green button labeled "install this script" on the [greasyfork page](https://greasyfork.org/en/scripts/389803)
