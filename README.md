@@ -1,2 +1,2 @@
-# Catlin Schedule
-Change from the sad Veracross schedule to the chad Catlin schedule 💪
+# Veracross CGS Schedule
+Userscript to bring the old CGS schedule view to the Veracross student schedule
