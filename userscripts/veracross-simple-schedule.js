@@ -3,6 +3,7 @@
 // @version      0.15
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
+// @namespace    https://greasyfork.org/users/118299
 // @match        https://portals.veracross.com/catlin/student/student*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @grant        none
