@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Veracross CGS Schedule
-// @version      0.14
+// @version      0.15
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
 // @match        https://portals.veracross.com/catlin/student/student*
@@ -453,26 +453,23 @@ if (window.location.href.match(/legacy/)) {
 
     const date = new URL(window.location.href).searchParams.get("date");
     const seedDate = date !== null ? new Date(date) : new Date();
-    const lastFriday = getLastFriday(seedDate);
-    const previousMonday = new Date(lastFriday);
-    const nextMonday = new Date(lastFriday);
+    const thisMonday = getLastFriday(seedDate);
+    thisMonday.setDate(thisMonday.getDate() + 3);
+    const previousMonday = new Date(thisMonday);
+    const nextMonday = new Date(thisMonday);
 
-    previousMonday.setDate(lastFriday.getDate() - 7);
-    nextMonday.setDate(lastFriday.getDate() + 7);
+    previousMonday.setDate(thisMonday.getDate() - 7);
+    nextMonday.setDate(thisMonday.getDate() + 7);
     $('table').hide();
-    Promise.all(getVeracrossWeekDateStrings(new Date(lastFriday.setDate(lastFriday.getDate() + 3))).map(getScheduleForDate)).then(res => {
+    Promise.all(getVeracrossWeekDateStrings(new Date(thisMonday)).map(getScheduleForDate)).then(res => {
         res.forEach(appendDay);
         $('.mainlabel b').text(mainlabel);
         $('table').show();
     });
 
-    $('td.arrows a')
-        .first()
-        .prop('href', '?date=' + dateToVeracrossDate(previousMonday))
-        .last()
-        .prop('href', '?date=' + dateToVeracrossDate(nextMonday))
-        .last()
-        .prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
+    $('td.arrows a').first().prop('href', '?date=' + dateToVeracrossDate(previousMonday));
+    $('td.arrows a').last().prop('href', '?date=' + dateToVeracrossDate(nextMonday));
+    $('td.controls.links a').last().prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
     window.onload = () => $('body > .dialog').remove();
 } else {
     window.onload = () => $('div.vx-Tabs').append(`
