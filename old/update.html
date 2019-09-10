@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- CSS -->
+  <!-- Google Fonts --><link href='https://fonts.googleapis.com/css?family=Open+Sans|Montserrat|Raleway' rel='stylesheet' type='text/css'>
+  <!-- Font Awesome --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- CSS Bootstrap --><link rel="stylesheet" href="css/bootstrap.css">
+  <!-- Bootstrap Toggle --><link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+  <!-- JS -->
+  <!-- jQuery --><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- JS Bootstrap --><script src="js/bootstrap.js"></script>
+  <!-- jQuery UI --><script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+  <!-- Bootstrap Toggle --><script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="/imgs/favicon.ico">
+  <title>Updates</title>
+</head>
+<body class="container">
+  <div class="jumbotron">
+    <h1>Updates!</h1>
+  </div>
+  <div class="update-box" data-title="Add beta version of schedule" data-date="May 24, 2017">
+    <p>Add the beta version of schedule!</p>
+  </div>
+  <div class="update-box" data-title="Added Background Settings" data-date="May 25, 2017">
+    <p>To change background: Click name > settings > change background > enter url and submit or change color.</p>
+  </div>
+  <div class="update-box" data-title="Added Add Link Settings and Resolved Cookie Issues" data-date="May 31, 2017">
+    <p>Now you can add links under every class! To add links, click on your name in the top left corner and click settings, and type in the corresponding info. Also resolved cookie issue so now cookies will save even after the browser quits.</p>
+  </div>
+  <div class="update-box" data-title="Add More Settings" data-date="Jun 1, 2017">
+    <p>Change text color and toggle border, all in settings</p>
+  </div>
+  <script type="text/javascript">
+    $('.update-box').each(function () {
+      $(this).replaceWith('<div class="media"><div class="media-body"><h4 class="media-heading">' + $(this).attr('data-title') + ' <small><i>' + $(this).attr('data-date') + '</i></small></h4><span>' + $(this).text() + '</span></div></div>')
+    });
+  </script>
+</body>
+</html>
