@@ -3,7 +3,7 @@
 // @version      0.16
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
-// @namespace    https://greasyfork.org/users/118299
+// @namespace    https://github.com/Kizjkre/catlin-schedule
 // @match        https://portals.veracross.com/catlin/student/student*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @grant        none
@@ -22,7 +22,7 @@ const colorDict = {
     'free': 'white'
 };
 
-const managers = ['Tristan Peng', 'Liam Wang', 'Dylan Smith', 'Avery Pritchard', 'Kristin Cohrs', 'Zachary Robinson', 'Tiffany Toh']; // TODO: add all managers
+const managers = ['Tristan Peng', 'Liam Wang', 'Dylan Smith', 'Avery Pritchard', 'Kristin Cohrs', 'Zachary Robinson', 'Tiffany Toh', 'Eric Wang', 'Mick Leungpathomaram', 'Annika Holliday', 'Audrey Daniels', 'Jeffrey Burt']; // TODO: temporary
 
 const normalTimes = [
     new Date(0, 0, 0, 8, 0),
