@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Veracross CGS Schedule
-// @version      0.16.2
+// @version      0.16.1
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
 // @namespace    https://greasyfork.org/users/118299
@@ -410,8 +410,6 @@ let schedule = `
   </body>
 `;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 const getLastFriday = date => {
   let d = new Date(date);
   let day = d.getDay();
@@ -437,40 +435,23 @@ const appendDay = daySchedule => {
   let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   $('table.sched.main > tbody > tr:nth-child(1)').append(`
-=======
-=======
->>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-const appendDay = daySchedule => {
-    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    $('table.sched.main > tbody > tr:nth-child(' + 1 + ')').append(`
-    <<<<<<< HEAD
-    >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-  <td class="daylabel">
-    <a href="/catlin/student/student/daily-schedule?date=${ dateToVeracrossDate(daySchedule.date) }">
-    <b>
-  ${ days[daySchedule.date.getDay()] } ${ months[daySchedule.date.getMonth()] } ${ daySchedule.date.getDate() + (!daySchedule.letter ? '' : ` (${ daySchedule.letter })`) }
-=======
     <td class="daylabel">
       <a href="/catlin/student/student/daily-schedule?date=${ dateToVeracrossDate(daySchedule.date) }">
         <b>
           ${ days[daySchedule.date.getDay()] } ${ months[daySchedule.date.getMonth()] } ${ daySchedule.date.getDate() + (!daySchedule.letter ? '' : ` (${ daySchedule.letter })`) }
->>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
         </b>
       </a>
     </td>
   `);
-if (isEmptyDay(daySchedule)) {
-  addSpecialDay('No Events', colorDict.free);
-} else if (isNormalDay(daySchedule)) {
-  addTableData(applyCustomRules(prepTableDataDay(trimDay(daySchedule))));
-} else {
-  addInlineDay(applyCustomRules(trimDay(daySchedule)));
-}
+  if (isEmptyDay(daySchedule)) {
+    addSpecialDay('No Events', colorDict.free);
+  } else if (isNormalDay(daySchedule)) {
+    addTableData(applyCustomRules(prepTableDataDay(trimDay(daySchedule))));
+  } else {
+    addInlineDay(applyCustomRules(trimDay(daySchedule)));
+  }
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 const getVeracrossWeekDateStrings = mondayDate => {
   let dates = [];
   for (let i = 0; i < 5; i++) {
@@ -515,102 +496,9 @@ const addInlineDay = daySchedule => {
       $('.special tbody').last().append(`<tr class="${ minsClass }"><td colspan="2" class="period ${ minsClass } specialperiod" style="background: ${ colorDict.free };"><span class="coursename">${ block.title }</span><br></td></tr>`);
       return;
     }
-  =======
-    if (window.location.href.match(/legacy/)) {
-      $('head').html(head);
-      $('body').html(schedule);
 
-      const date = new URL(window.location.href).searchParams.get("date");
-      const seedDate = date !== null ? new Date(date) : new Date();
-      const thisMonday = getLastFriday(seedDate);
-      thisMonday.setDate(thisMonday.getDate() + 3);
-      const previousMonday = new Date(thisMonday);
-      const nextMonday = new Date(thisMonday);
+    let timeRange = `${ format12HourTime(block.startTime) }-${ format12HourTime(block.endTime) }`;
 
-      previousMonday.setDate(thisMonday.getDate() - 7);
-      nextMonday.setDate(thisMonday.getDate() + 7);
-      $('table').hide();
-      Promise.all(getVeracrossWeekDateStrings(new Date(thisMonday)).map(getScheduleForDate)).then(res => {
-      =======
-        if (window.location.href.match(/legacy/)) {
-          $('head').html(head);
-          $('body').html(schedule);
-
-          const date = new URL(window.location.href).searchParams.get("date");
-          const seedDate = date !== null ? new Date(date) : new Date();
-          const thisMonday = getLastFriday(seedDate);
-          thisMonday.setDate(thisMonday.getDate() + 3);
-          const previousMonday = new Date(thisMonday);
-          const nextMonday = new Date(thisMonday);
-
-          previousMonday.setDate(thisMonday.getDate() - 7);
-          nextMonday.setDate(thisMonday.getDate() + 7);
-          $('table').hide();
-          Promise.all(getVeracrossWeekDateStrings(new Date(thisMonday)).map(getScheduleForDate)).then(res => {
-          >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-            res.forEach(appendDay);
-            $('.mainlabel b').text(mainlabel);
-            $('table').show();
-          });
-
-        <<<<<<< HEAD
-          $('td.arrows a').first().prop('href', '?date=' + dateToVeracrossDate(previousMonday));
-          $('td.arrows a').last().prop('href', '?date=' + dateToVeracrossDate(nextMonday));
-          $('td.controls.links a').last().prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
-          window.onload = () => $('body > .dialog').remove();
-        } else {
-          window.onload = () => $('div.vx-Tabs').append(`
-=======
-    $('td.arrows a').first().prop('href', '?date=' + dateToVeracrossDate(previousMonday));
-    $('td.arrows a').last().prop('href', '?date=' + dateToVeracrossDate(nextMonday));
-    $('td.controls.links a').last().prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
-    window.onload = () => $('body > .dialog').remove();
-} else {
-    window.onload = () => $('div.vx-Tabs').append(`
-            >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-          <a class="vx-Tab_Item" onclick="window.location = 'legacy' + window.location.search;" style="color: #ff5959;">
-            <div class="vx-Tab_Icon">
-            <i class="nc-icon-glyph media-1_flash-21"></i>
-            </div>
-            <div class="vx-Tab_Description">CGS Schedule</div>
-          </a>
-            `);
-    }
-
-<<<<<<< HEAD
-    function getVeracrossWeekDateStrings(mondayDate) {
-      let dates = [];
-      for (let i = 0; i < 5; i++) {
-        dates.push(dateToVeracrossDate(mondayDate));
-        mondayDate.setDate(mondayDate.getDate() + 1);
-      }
-      return dates;
-    }
-
-
-    function getLastFriday(date) {
-      var d = new Date(date),
-        day = d.getDay(),
-        diff = (day <= 5) ? (7 - 5 + day) : (day - 5);
-
-      d.setDate(d.getDate() - diff);
-      d.setHours(0);
-      d.setMinutes(0);
-      d.setSeconds(0);
-
-      return d;
-    }
-
-    function dateToVeracrossDate(date) {
-      return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
-    }
-  >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-
-    function addSpecialDay(text, bgcolor, link = "") {
-      $("table.sched.main > tbody > tr:nth-child(" + 2 + ")").append("<td rowspan=" + 12 + " bgcolor=" + bgcolor + " class=\"specialday\"><a " + (link === "" ? "" : "href=" + link) + " class=\"coursename\">" + text + "</a></td>");
-    }
-
-  <<<<<<< HEAD
     // start duplicate
     let smallBlock = block.title === block.subtitle || block.subtitle === '' || block.title === 'US C&C';
     let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
@@ -618,282 +506,157 @@ const addInlineDay = daySchedule => {
     if (!block.free) {
       block.title = block.title.split(' - ')[0];
       block.subtitle = block.subtitle.split(' • ').slice(-2).reverse().join(' - ').replace('US ', 'Blk ').replace(' Long', '');
-    =======
-        function addInlineDay(daySchedule) {
-          $("table.sched.main > tbody > tr:nth-child(" + 2 + ")").append("<td rowspan=" + 12 + " class=\"specialday\" style=\"border-top-style: solid; border-right-style: solid; border-bottom: 0px; border-left-style: solid;\"><table class=\"sched week special\"><tbody>");
-
-          if (daySchedule.blocks[0].startTime.getTime() !== normalTimes[0].getTime()) {
-            daySchedule.blocks.unshift({"startTime": normalTimes[0], "title": "Late Start", "subtitle": "", "rowSpan": 1});
-          >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-          }
-
-        <<<<<<< HEAD
-          $('.special tbody').last().append(`<tr class="${ minsClass }"><td class="times ${ minsClass }">${ timeRange }</td><td rowspan="1" class="period ${ minsClass } specialperiod" style="background: ${ bgcolor };"><span class="coursename">${ block.title }</span>${ (smallBlock ? '' : '<br>') }<span class="subtitle">${ (smallBlock ? '' : block.subtitle) }</span><br></td></tr>`);
-        });
-    };
-  =======
-      daySchedule.blocks.forEach((block, index) => {
-        if (index === daySchedule.blocks.length - 1) {
-          block.endTime = schoolEndTime;
-        } else {
-          block.endTime = daySchedule.blocks[index + 1].startTime;
-        }
-        block.mins = Math.min(Math.max(new Date(block.endTime.getTime() - block.startTime.getTime()).getTime() / 1000 / 60, 5), 90);
-      });
-  =======
-      function getVeracrossWeekDateStrings(mondayDate) {
-        let dates = [];
-        for (let i = 0; i < 5; i++) {
-          dates.push(dateToVeracrossDate(mondayDate));
-          mondayDate.setDate(mondayDate.getDate() + 1);
-        }
-        return dates;
-      }
-
-
-    function getLastFriday(date) {
-      var d = new Date(date),
-        day = d.getDay(),
-        diff = (day <= 5) ? (7 - 5 + day) : (day - 5);
-
-      d.setDate(d.getDate() - diff);
-      d.setHours(0);
-      d.setMinutes(0);
-      d.setSeconds(0);
-
-      return d;
     }
+    // end duplicate
 
-    function dateToVeracrossDate(date) {
-      return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    $('.special tbody').last().append(`<tr class="${ minsClass }"><td class="times ${ minsClass }">${ timeRange }</td><td rowspan="1" class="period ${ minsClass } specialperiod" style="background: ${ bgcolor };"><span class="coursename">${ block.title }</span>${ (smallBlock ? '' : '<br>') }<span class="subtitle">${ (smallBlock ? '' : block.subtitle) }</span><br></td></tr>`);
+  });
+};
+
+const addTableData = daySchedule => {
+  daySchedule.blocks.forEach(block => {
+    let normalTimeIndex = 1;
+    normalTimes.some(time => {
+      normalTimeIndex++;
+      return block.startTime.getHours() === time.getHours() && block.startTime.getMinutes() === time.getMinutes();
+    });
+    let smallBlock = block.title === block.subtitle || block.subtitle === '' || block.title === 'US C&C';
+    let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
+    let bgcolor = blockNumMatchAttempt !== null ? colorDict[parseInt(blockNumMatchAttempt[0].slice(-1))] : block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null ? colorDict.free : colorDict[0];
+    if (!block.free) {
+      block.title = block.title.split(' - ')[0];
+      block.subtitle = block.subtitle.split(' • ').slice(-2).reverse().join(' - ').replace('US ', 'Blk ').replace(' Long', '');
     }
+    $(`table.sched.main > tbody > tr:nth-child(${ normalTimeIndex })`).append(`<td rowspan="${ block.rowSpan }" class="period mins${ block.mins }" style="background: ${ bgcolor };"><span class="coursename">${ block.title }</span>${ (smallBlock ? '' : '<br>') }<span class="subtitle">${ (smallBlock ? '' : block.subtitle) }</span><br></td>`);
+  });
+};
 
-    function addSpecialDay(text, bgcolor, link = "") {
-      $("table.sched.main > tbody > tr:nth-child(" + 2 + ")").append("<td rowspan=" + 12 + " bgcolor=" + bgcolor + " class=\"specialday\"><a " + (link === "" ? "" : "href=" + link) + " class=\"coursename\">" + text + "</a></td>");
-    }
-
-    function addInlineDay(daySchedule) {
-      $("table.sched.main > tbody > tr:nth-child(" + 2 + ")").append("<td rowspan=" + 12 + " class=\"specialday\" style=\"border-top-style: solid; border-right-style: solid; border-bottom: 0px; border-left-style: solid;\"><table class=\"sched week special\"><tbody>");
-
-      if (daySchedule.blocks[0].startTime.getTime() !== normalTimes[0].getTime()) {
-        daySchedule.blocks.unshift({"startTime": normalTimes[0], "title": "Late Start", "subtitle": "", "rowSpan": 1});
-      }
-
-      daySchedule.blocks.forEach((block, index) => {
-        if (index === daySchedule.blocks.length - 1) {
-          block.endTime = schoolEndTime;
-        } else {
-          block.endTime = daySchedule.blocks[index + 1].startTime;
-        }
-        block.mins = Math.min(Math.max(new Date(block.endTime.getTime() - block.startTime.getTime()).getTime() / 1000 / 60, 5), 90);
-      });
-
-      let tableBody = $(".special tbody").last();
-      daySchedule.blocks.forEach((block) => {
-        let minsClass = "mins" + block.mins;
-
-        if (block.title === "Late Start") {
-          tableBody.append("<tr class=" + minsClass + "><td colspan=\"2\" bgcolor=" + colorDict["free"] + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span><br></td>\r\n</tr>");
-          return;
-        }
-
-        let timeRange = format12HourTime(block.startTime) + "-" + format12HourTime(block.endTime);
-
-
-        // start duplicate
-        let smallBlock = block.title === block.subtitle || block.subtitle === "" || block.title === "US C&C";
-        let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
-        let bgcolor = colorDict[0];
-        if (blockNumMatchAttempt !== null) {
-          bgcolor = colorDict[parseInt(blockNumMatchAttempt[0].slice(-1))];
-        } else if (block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null) {
-          bgcolor = colorDict["free"];
-        }
-        if (block.free !== true) {
-          block.title = block.title.split(" - ")[0];
-          block.subtitle = block.subtitle.split(" • ").slice(-2).reverse().join(" - ").replace("US ", "Blk ").replace(" Long", "");
-        }
-        // end duplicate
-
-        tableBody.append("<tr class=" + minsClass + ">\r\n<td class=\"times " + minsClass + "\">" + timeRange + "</td>\r\n<td rowspan=\"1\" bgcolor=" + bgcolor + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span>" + (smallBlock ? "" : "<br>") + "<span class=\"subtitle\">" + (smallBlock ? "" : block.subtitle) + "</span><br></td>\r\n</tr>");
-      });
-    }
-  >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-
-    let tableBody = $(".special tbody").last();
-    daySchedule.blocks.forEach((block) => {
-      let minsClass = "mins" + block.mins;
-
-      if (block.title === "Late Start") {
-        tableBody.append("<tr class=" + minsClass + "><td colspan=\"2\" bgcolor=" + colorDict["free"] + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span><br></td>\r\n</tr>");
-        return;
-      }
-
-      let timeRange = format12HourTime(block.startTime) + "-" + format12HourTime(block.endTime);
-
-
-      // start duplicate
-      let smallBlock = block.title === block.subtitle || block.subtitle === "" || block.title === "US C&C";
-      let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
-      let bgcolor = colorDict[0];
-      if (blockNumMatchAttempt !== null) {
-        bgcolor = colorDict[parseInt(blockNumMatchAttempt[0].slice(-1))];
-      } else if (block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null) {
-        bgcolor = colorDict["free"];
-      }
-      if (block.free !== true) {
-        block.title = block.title.split(" - ")[0];
-        block.subtitle = block.subtitle.split(" • ").slice(-2).reverse().join(" - ").replace("US ", "Blk ").replace(" Long", "");
-      }
-      // end duplicate
-
-      tableBody.append("<tr class=" + minsClass + ">\r\n<td class=\"times " + minsClass + "\">" + timeRange + "</td>\r\n<td rowspan=\"1\" bgcolor=" + bgcolor + " class=\"period " + minsClass + " specialperiod\"><span class=\"coursename\">" + block.title + "</span>" + (smallBlock ? "" : "<br>") + "<span class=\"subtitle\">" + (smallBlock ? "" : block.subtitle) + "</span><br></td>\r\n</tr>");
-    });
-  }
-  >>>>>>> 09a7127b2cba3ff60fad6a58dfd82c7f1fde9c95
-
-  const addTableData = daySchedule => {
-    daySchedule.blocks.forEach(block => {
-      let normalTimeIndex = 1;
-      normalTimes.some(time => {
-        normalTimeIndex++;
-        return block.startTime.getHours() === time.getHours() && block.startTime.getMinutes() === time.getMinutes();
-      });
-      let smallBlock = block.title === block.subtitle || block.subtitle === '' || block.title === 'US C&C';
-      let blockNumMatchAttempt = block.subtitle.match(/US \d(?! Flex)/);
-      let bgcolor = blockNumMatchAttempt !== null ? colorDict[parseInt(blockNumMatchAttempt[0].slice(-1))] : block.free || block.subtitle.match(/Break/) != null || block.subtitle.match(/Lunch/) != null ? colorDict.free : colorDict[0];
-      if (!block.free) {
-        block.title = block.title.split(' - ')[0];
-        block.subtitle = block.subtitle.split(' • ').slice(-2).reverse().join(' - ').replace('US ', 'Blk ').replace(' Long', '');
-      }
-      $(`table.sched.main > tbody > tr:nth-child(${ normalTimeIndex })`).append(`<td rowspan="${ block.rowSpan }" class="period mins${ block.mins }" style="background: ${ bgcolor };"><span class="coursename">${ block.title }</span>${ (smallBlock ? '' : '<br>') }<span class="subtitle">${ (smallBlock ? '' : block.subtitle) }</span><br></td>`);
-    });
-  };
-
-  const prepTableDataDay = daySchedule => {
-    let newBlocks = [];
-    normalTimes.forEach(time => {
-      let blockWithTime = daySchedule.blocks.find(block => block.startTime.getTime() === time.getTime());
-      newBlocks.push(blockWithTime === undefined ? null : blockWithTime);
-    });
-
-    for (let i = 0; i < newBlocks.length; i++) {
-      if (newBlocks[i] === null) {
-        let title = 'Free';
-        switch (i) {
-          case 6:
-            title = 'Free<span class="subtitle"> - AM Flex</span>';
-            break;
-          case 7:
-            title = 'Co-Curric';
-            break;
-          case 9:
-            title = 'Free<span class="subtitle"> - PM Flex</span>';
-            break;
-        }
-        newBlocks[i] = { 'startTime': normalTimes[i], 'title': title, 'subtitle': '', 'rowSpan': 1, 'free': true };
-      }
-      if (i < newBlocks.length - 1 && (newBlocks[i].subtitle.match(/Long/) != null || newBlocks[i].title === 'Free' || newBlocks[i].title === 'Assembly') && newBlocks[i + 1] == null) {
-        newBlocks[i].rowSpan++;
-        newBlocks[i + 1] = 'remove';
-        i++;
-      }
-    }
-    newBlocks = newBlocks.filter(block => block !== 'remove');
-
-    let timeIndex = 0;
-    newBlocks.forEach(block => {
-      block.mins = Math.min(Math.max(new Date(normalAllTimes[timeIndex + block.rowSpan].getTime() - normalAllTimes[timeIndex].getTime()).getTime() / 1000 / 60, 5), 90);
-      timeIndex = timeIndex + block.rowSpan;
-    });
-
-    daySchedule.blocks = newBlocks;
-    return daySchedule;
-  };
-
-  const trimDay = daySchedule => {
-    daySchedule.blocks = daySchedule.blocks.filter(block => {
-      let startHours = block.startTime.getHours();
-      if (startHours < 8 || startHours >= 12 + 3) return false;
-      return !daySchedule.blocks.some((otherBlock) => { // keep longer description one (TODO: show conflict)
-        let sameTime = block.startTime.getTime() === otherBlock.startTime.getTime();
-        if (sameTime) deleteNextSameTime = true;
-        return sameTime && (block.title.length < otherBlock.title.length || block.subtitle.length < otherBlock.subtitle.length);
-      });
-    });
-    return daySchedule;
-  };
-
-  const isNormalDay = daySchedule => {
-    return daySchedule.blocks.every(block => {
-      let startHours = block.startTime.getHours();
-      let startMinutes = block.startTime.getMinutes();
-      if (startHours < 8 || startHours >= 12 + 3) return true;
-      return normalTimes.some(time => startHours === time.getHours() && startMinutes === time.getMinutes());
-    });
-  };
-
-  const parseVeracrossDate = timeString => {
-    let isPm = false;
-    timeString = timeString.includes('am') ? timeString.replace(' am', '') : timeString;
-    if (timeString.includes('pm')) {
-      timeString = timeString.replace(' pm', '');
-      isPm = true;
-    }
-    let splitString = timeString.split(':');
-    return new Date(0, 0, 0, parseInt(splitString[0]) + (isPm && parseInt(splitString[0]) !== 12 ? 12 : 0), parseInt(splitString[1]));
-  };
-
-  const getScheduleForDate = dateString => new Promise( resolve =>  {
-    $.get(`https://portals.veracross.com/catlin/student/student/daily-schedule?date=${ dateString }`, data => {
-      let arr = [];
-      $(data).find('.schedule .schedule-item').each((index, value) => {
-        let timeString = $(value).find('.item-time').text().replace('NOW', '').trim();
-        let startTime = parseVeracrossDate(timeString);
-        let title = $(value).find('.item-main-description').text().trim();
-        let subtitle = $(value).find('.item-subtitle').text().trim();
-        arr.push({ startTime, title, subtitle, rowSpan: 1 });
-      });
-      let splitDate = dateString.split('-');
-      let date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
-      let letter = $(data).find(".rotation-day-header").text().trim().slice(-1);
-      if (mainlabel === '') {
-        mainlabel = data.match(/full_name: "[A-z ]+(?=",)/)[0].split('"')[1];
-      }
-      resolve({ date , letter, blocks: arr});
-    }).fail(() => window.location.href = "https://portals.veracross.com/catlin"); // user was not logged in, redirect them to login page
+const prepTableDataDay = daySchedule => {
+  let newBlocks = [];
+  normalTimes.forEach(time => {
+    let blockWithTime = daySchedule.blocks.find(block => block.startTime.getTime() === time.getTime());
+    newBlocks.push(blockWithTime === undefined ? null : blockWithTime);
   });
 
-  if (window.location.href.match(/legacy/)) {
-    $('head').html(head);
-    $('body').html(schedule);
+  for (let i = 0; i < newBlocks.length; i++) {
+    if (newBlocks[i] === null) {
+      let title = 'Free';
+      switch (i) {
+        case 6:
+          title = 'Free<span class="subtitle"> - AM Flex</span>';
+          break;
+        case 7:
+          title = 'Co-Curric';
+          break;
+        case 9:
+          title = 'Free<span class="subtitle"> - PM Flex</span>';
+          break;
+      }
+      newBlocks[i] = { 'startTime': normalTimes[i], 'title': title, 'subtitle': '', 'rowSpan': 1, 'free': true };
+    }
+    if (i < newBlocks.length - 1 && (newBlocks[i].subtitle.match(/Long/) != null || newBlocks[i].title === 'Free' || newBlocks[i].title === 'Assembly') && newBlocks[i + 1] == null) {
+      newBlocks[i].rowSpan++;
+      newBlocks[i + 1] = 'remove';
+      i++;
+    }
+  }
+  newBlocks = newBlocks.filter(block => block !== 'remove');
 
-    const date = new URL(window.location.href).searchParams.get("date");
-    const seedDate = date !== null ? new Date(date) : new Date();
-    const thisMonday = getLastFriday(seedDate);
-    thisMonday.setDate(thisMonday.getDate() + 3);
-    const previousMonday = new Date(thisMonday);
-    const nextMonday = new Date(thisMonday);
+  let timeIndex = 0;
+  newBlocks.forEach(block => {
+    block.mins = Math.min(Math.max(new Date(normalAllTimes[timeIndex + block.rowSpan].getTime() - normalAllTimes[timeIndex].getTime()).getTime() / 1000 / 60, 5), 90);
+    timeIndex = timeIndex + block.rowSpan;
+  });
 
-    previousMonday.setDate(thisMonday.getDate() - 7);
-    nextMonday.setDate(thisMonday.getDate() + 7);
-    $('table').hide();
-    Promise.all(getVeracrossWeekDateStrings(new Date(thisMonday)).map(getScheduleForDate)).then(res => {
-      res.forEach(appendDay);
-      $('.mainlabel b').text(mainlabel);
-      $('table').show();
+  daySchedule.blocks = newBlocks;
+  return daySchedule;
+};
+
+const trimDay = daySchedule => {
+  daySchedule.blocks = daySchedule.blocks.filter(block => {
+    let startHours = block.startTime.getHours();
+    if (startHours < 8 || startHours >= 12 + 3) return false;
+    return !daySchedule.blocks.some((otherBlock) => { // keep longer description one (TODO: show conflict)
+      let sameTime = block.startTime.getTime() === otherBlock.startTime.getTime();
+      if (sameTime) deleteNextSameTime = true;
+      return sameTime && (block.title.length < otherBlock.title.length || block.subtitle.length < otherBlock.subtitle.length);
     });
+  });
+  return daySchedule;
+};
 
-    $('td.arrows a')
-      .first()
-      .prop('href', '?date=' + dateToVeracrossDate(previousMonday));
-    $('td.arrows a')
-      .last()
-      .prop('href', '?date=' + dateToVeracrossDate(nextMonday));
-    $('td.controls.links a').last().prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
-    window.onload = () => $('body > .dialog').remove();
-  } else {
-    window.onload = () => $('div.vx-Tabs').append(`
+const isNormalDay = daySchedule => {
+  return daySchedule.blocks.every(block => {
+    let startHours = block.startTime.getHours();
+    let startMinutes = block.startTime.getMinutes();
+    if (startHours < 8 || startHours >= 12 + 3) return true;
+    return normalTimes.some(time => startHours === time.getHours() && startMinutes === time.getMinutes());
+  });
+};
+
+const getScheduleForDate = dateString => new Promise(function (resolve, reject) {
+  $.get(`https://portals.veracross.com/catlin/student/student/daily-schedule?date=${ dateString }`, data => {
+    let arr = [];
+    $(data).find('.schedule .schedule-item').each((index, value) => {
+      let timeString = $(value).find('.item-time').text().replace('NOW', '').trim();
+      let startTime = parseVeracrossDate(timeString);
+      let title = $(value).find('.item-main-description').text().trim();
+      let subtitle = $(value).find('.item-subtitle').text().trim();
+      arr.push({ startTime, title, subtitle, rowSpan: 1 });
+    });
+    let splitDate = dateString.split('-');
+    let date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+    let letter = $(data).find('.rotation-day-header').text().trim().slice(-1);
+    if (mainlabel === '') {
+      mainlabel = data.match(/full_name: "[A-z ]+(?=",)/)[0].split('"')[1];
+    }
+    resolve({ date, letter, blocks: arr});
+  }).fail(() => window.location.href = "https://portals.veracross.com/catlin"); // user was not logged in, redirect them to login page
+});
+
+const parseVeracrossDate = timeString => {
+  let isPm = false;
+  if (timeString.includes('am')) {
+    timeString = timeString.replace(' am', '');
+  }
+  if (timeString.includes('pm')) {
+    timeString = timeString.replace(' pm', '');
+    isPm = true;
+  }
+  let splitString = timeString.split(':');
+  return new Date(0, 0, 0, parseInt(splitString[0]) + (isPm && parseInt(splitString[0]) !== 12 ? 12 : 0), parseInt(splitString[1]));
+};
+
+if (window.location.href.match(/legacy/)) {
+  $('head').html(head);
+  $('body').html(schedule);
+
+  const date = new URL(window.location.href).searchParams.get("date");
+  const seedDate = date !== null ? new Date(date) : new Date();
+  const thisMonday = getLastFriday(seedDate);
+  thisMonday.setDate(thisMonday.getDate() + 3);
+  const previousMonday = new Date(thisMonday);
+  const nextMonday = new Date(thisMonday);
+
+  previousMonday.setDate(thisMonday.getDate() - 7);
+  nextMonday.setDate(thisMonday.getDate() + 7);
+  $('table').hide();
+  Promise.all(getVeracrossWeekDateStrings(new Date(thisMonday)).map(getScheduleForDate)).then(res => {
+    res.forEach(appendDay);
+    $('.mainlabel b').text(mainlabel);
+    $('table').show();
+  });
+
+  $('td.arrows a')
+    .first()
+    .prop('href', '?date=' + dateToVeracrossDate(previousMonday));
+  $('td.arrows a')
+    .last()
+    .prop('href', '?date=' + dateToVeracrossDate(nextMonday));
+  $('td.controls.links a').last().prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
+  window.onload = () => $('body > .dialog').remove();
+} else {
+  window.onload = () => $('div.vx-Tabs').append(`
     <a class="vx-Tab_Item" onclick="window.location = 'legacy' + window.location.search;" style="color: #ff5959;">
       <div class="vx-Tab_Icon">
         <i class="nc-icon-glyph media-1_flash-21"></i>
@@ -901,5 +664,4 @@ const addInlineDay = daySchedule => {
       <div class="vx-Tab_Description">CGS Schedule</div>
     </a>
   `);
-  }
-
+}
