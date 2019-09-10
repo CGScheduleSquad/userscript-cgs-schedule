@@ -2,132 +2,429 @@
 // @name         Veracross CGS Schedule
 // @version      0.11
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
-// @author       Liam Wang
+// @author       Liam Wang & Tristan Peng
 // @match        https://portals.veracross.com/catlin/student/student*
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @grant        none
-// @run-at document-start
-// @namespace https://greasyfork.org/users/118299
+// @run-at       document-start
 // ==/UserScript==
 
 const colorDict = {
-  0:"#C0C0C0",
-  1:"#FFCE51",
-  2:"#A67FB9",
-  3:"#E67326",
-  4:"#00ABBD",
-  5:"#AAC02C",
-  6:"#EF4957",
-  7:"#FF75F2",
-  "free":"white"
+  0: '#C0C0C0',
+  1: '#FFCE51',
+  2: '#A67FB9',
+  3: '#E67326',
+  4: '#00ABBD',
+  5: '#AAC02C',
+  6: '#EF4957',
+  7: '#FF75F2',
+  'free': 'white'
 };
-const normalTimes = [ // rename normalStartTimes
-  new Date(0,0,0,8,0),
-  new Date(0,0,0,8,45),
-  new Date(0,0,0,9,20),
-  new Date(0,0,0,9,30),
-  new Date(0,0,0,9,45),
-  new Date(0,0,0,10,35),
-  new Date(0,0,0,11,20),
-  new Date(0,0,0,11,55),
-  new Date(0,0,0,12,30),
-  new Date(0,0,0,13,10),
-  new Date(0,0,0,13,40),
-  new Date(0,0,0,14,30),
+
+const managers = ['Tristan Peng', 'Liam Wang', 'Dylan Smith', 'Avery Pritchard', 'Kristin Cohrs', 'Zachary Robinson', 'Tiffany Toh']; // TODO: add all managers
+
+const normalTimes = [
+  new Date(0, 0, 0, 8, 0),
+  new Date(0, 0, 0, 8, 45),
+  new Date(0, 0, 0, 9, 20),
+  new Date(0, 0, 0, 9, 30),
+  new Date(0, 0, 0, 9, 45),
+  new Date(0, 0, 0, 10, 35),
+  new Date(0, 0, 0, 11, 20),
+  new Date(0, 0, 0, 11, 55),
+  new Date(0, 0, 0, 12, 30),
+  new Date(0, 0, 0, 13, 10),
+  new Date(0, 0, 0, 13, 40),
+  new Date(0, 0, 0, 14, 30)
 ];
 
-var mainlabel = "";
-let schoolEndTime = new Date(0,0,0,15,15);
+let mainlabel = '';
+let schoolEndTime = new Date(0, 0, 0, 15, 15);
 let normalAllTimes = normalTimes.concat([schoolEndTime]);
 
-let specialDayStyle = ".daylabel a {color:black} .daylabel a:visited {color:black} .specialday{padding:0}.specialday>.sched{height:100%;width:100%}.specialday>.sched tr:first-child td{border-top:0}.specialday>.sched tr td:first-child{border-left:0}.specialday>.sched tr td:last-child{border-right:0}";
-let scheduleStyle = "\r\n\tHTML { height:95%; }\r\n\tBODY { height:100%; }\r\n\t#schedarea { height:100%; }\r\n\tTABLE.sched { border-collapse:collapse; empty-cells:show; height:90%; width:100%;  }\r\n\t a:visited {color: #00E;} TD { -webkit-print-color-adjust: exact; }\r\n\tTD.times { border-style:solid; border-width:2px; border-color:#000000; text-align:center; }\r\n\tTD.period { border-style:solid; border-width:2px; border-color:#000000; text-align:center; }\r\n\tTD.daylabel { border-style:none; height:5%; width:18%; text-align:center; }\r\n\tTD.specialday { border-style:solid; border-width:2px; border-color:#000000; width:18%; text-align:center; vertical-align:top; }\r\n\tTD.mainlabel { border-style:none; height:5%; width:10%; text-align:center; }\r\n\tTD.mins90 { height:18%; }\r\n\tTD.mins85 { height:17%; }\r\n\tTD.mins80 { height:16%; }\r\n\tTD.mins75 { height:15%; }\r\n\tTD.mins70 { height:14%; }\r\n\tTD.mins65 { height:13%; }\r\n\tTD.mins60 { height:12%; }\r\n\tTD.mins55 { height:11%; }\r\n\tTD.mins50 { height:10%; }\r\n\tTD.mins45 { height:9%; }\r\n\tTD.mins40 { height:8%; }\r\n\tTD.mins35 { height:7%; }\r\n\tTD.mins30 { height:6%; }\r\n\tTD.mins25 { height:5%; font-size:90%; }\r\n\tTD.mins25big { height:5%; }\r\n\tTD.mins20 { height:4%; font-size:90%; }\r\n\tTD.mins15 { height:3%; font-size:80%; }\r\n\tTD.mins10 { height:2%; font-size:75%; }\r\n\tTD.mins5 { height:1%; font-size:75%; }\r\n\tTABLE.controls { border-style:none; width:100%; max-height:5%; padding:0px; margin:0px;}\r\n\tHR.controls { width:100%; padding:0px; margin:0px;}\r\n\tTD.controls { border-style:none; text-align:center; width:20%; font-family:\"sans-serif\"; font-weight:bold; padding:0px; margin:0px; }\r\n\tTD.controls.arrows { width:8%; }\r\n\tTD.controls.links { width:28%; }\r\n\t.coursename { font-size:100%; }\r\n\t.subtitle { font-size:75%; }\r\n\t.schedarea > .sched.week { font-size:120%; }\r\n\r\n\t@media print { .controls { display:none; } }\r\n\r\n\t@media screen and (orientation:portrait) and (min-height:1000px) {  /* phone */\r\n\t\t.sched.today { font-size:250%; }\r\n\t\tTD.controls { font-size:175%; }\r\n\t}\r\n\t@media screen and (orientation:landscape) and (max-height:500px) {  /* phone */\r\n\t\tTD.controls { font-size: 150%; }\r\n\t}\r\n\t@media screen and (orientation:portrait) and (max-height:1000px) { \r\n\t\t.sched.today { font-size:200%; }\r\n\t\tTD.controls { font-size: 150%; }\r\n\t}\r\n\t@media screen and (orientation:landscape) and (min-height:500px) { \r\n\t\tTD.controls { font-size: 100%; }\r\n\t}\r\n";
-let scheduleHead = "<head>\r\n<title>CGS Schedule</title>\r\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\r\n<link rel=\"shortcut icon\" href=\"https://inside.catlin.edu/scripts/sched/favicon.ico\">\r\n<style type=\"text/css\">"+scheduleStyle+specialDayStyle+"</style>\r\n\r\n</head>";
-let scheduleBody = "<body data-gr-c-s-loaded=\"true\" class=\"vsc-initialized\" style=\"\"><table class=\"controls\"><tbody><tr><td class=\"controls arrows\"><a><img src=\"http://inside.catlin.edu/scripts/sched/left48.png\"></a></td><td class=\"controls links\"><a href=\"https://portals.veracross.com/catlin/student/student/daily-schedule\">Today</a></td><td class=\"controls links\"><a href=\"?\">This Week</a></td><td class=\"controls links\"><a>Return To Portal</a></td><td class=\"controls arrows\"><a><img src=\"http://inside.catlin.edu/scripts/sched/right48.png\"></a></td></tr></tbody></table><hr class=\"controls\"><div id=\"schedarea\"><table class=\"sched week main\"><tbody><tr><td class=\"mainlabel\"><b></b></td></tr><tr class=\"mins45\"><td class=\"times mins45\">8:00-8:45</td></tr><tr class=\"mins25\"><td class=\"times mins25\">8:45-9:15</td></tr><tr class=\"mins10\"><td class=\"times mins10\">9:20-9:30</td></tr><tr class=\"mins10\"><td class=\"times mins10\">9:30-9:40</td></tr><tr class=\"mins45\"><td class=\"times mins45\">9:45-10:30</td></tr><tr class=\"mins45\"><td class=\"times mins45\">10:35-11:20</td></tr><tr class=\"mins25\"><td class=\"times mins25\">11:20-11:50</td></tr><tr class=\"mins35\"><td class=\"times mins35\">11:55-12:30</td></tr><tr class=\"mins35\"><td class=\"times mins35\">12:30-1:05</td></tr><tr class=\"mins25\"><td class=\"times mins25\">1:10-1:40</td></tr><tr class=\"mins45\"><td class=\"times mins45\">1:40-2:25</td></tr><tr class=\"mins45\"><td class=\"times mins45\">2:30-3:15</td></tr></tbody></table></div></body>";
+let head = `
+  <head>
+    <title>CGS Schedule</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" href="https://inside.catlin.edu/scripts/sched/favicon.ico">
+    <style type="text/css">
+      .daylabel a {
+        color: black;
+      }
+      .daylabel a: visited {
+        color: black;
+      }
+      .specialday{
+        padding: 0;
+      }
+      .specialday > .sched{
+        height: 100%;
+        width: 100%;
+      }
+      .specialday > .sched tr:first-child td{
+        border-top: 0;
+      }
+      .specialday>.sched tr td:first-child{
+        border-left: 0;
+      }
+      .specialday>.sched tr td:last-child{
+        border-right: 0;
+      }
+      html {
+        height: 95%;
+      }
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      #schedarea {
+        height: 100%;
+      }
+      table.sched {
+        border-collapse: collapse;
+        empty-cells: show;
+        height: 90%;
+        width: 100%;
+      }
+      a:visited {
+        color: #00e;
+      }
+      td {
+        -webkit-print-color-adjust: exact;
+      }
+      td.times {
+        border-style: solid;
+        border-width: 2px;
+        border-color: #000000;
+        text-align: center;
+      }
+      td.period {
+        border-style: solid;
+        border-width: 2px;
+        border-color: #000000;
+        text-align: center;
+      }
+      td.daylabel {
+        border-style: none;
+        height: 5%;
+        width: 18%;
+        text-align: center;
+      }
+      td.specialday {
+        border-style: solid;
+        border-width: 2px;
+        border-color: #000000;
+        width: 18%;
+        text-align: center;
+        vertical-align: top;
+      }
+      td.mainlabel {
+        border-style: none;
+        height: 5%;
+        width: 10%;
+        text-align: center;
+      }
+      td.mins90 {
+        height: 18%;
+      }
+      td.mins85 {
+        height: 17%;
+      }
+      td.mins80 {
+        height: 16%;
+      }
+      td.mins75 {
+        height: 15%;
+      }
+      td.mins70 {
+        height: 14%;
+      }
+      td.mins65 {
+        height: 13%;
+      }
+      td.mins60 {
+        height: 12%;
+      }
+      td.mins55 {
+        height: 11%;
+      }
+      td.mins50 {
+        height: 10%;
+      }
+      td.mins45 {
+        height: 9%;
+      }
+      td.mins40 {
+        height: 8%;
+      }
+      td.mins35 {
+        height: 7%;
+      }
+      td.mins30 {
+        height: 6%;
+      }
+      td.mins25 {
+        height: 5%;
+        font-size: 90%;
+      }
+      td.mins25big {
+        height: 5%;
+      }
+      td.mins20 {
+        height: 4%;
+        font-size: 90%;
+      }
+      td.mins15 {
+        height: 3%;
+        font-size: 80%;
+      }
+      td.mins10 {
+        height: 2%;
+        font-size: 75%;
+      }
+      td.mins5 {
+        height: 1%;
+        font-size: 75%;
+      }
+      table.controls {
+        border-style: none;
+        width: 100%;
+        max-height: 5%;
+        padding: 0px;
+        margin: 0px;
+      }
+      hr.controls {
+        width: 100%;
+        padding: 0px;
+        margin: 0px;
+      }
+      td.controls {
+        border-style: none;
+        text-align: center;
+        width: 20%;
+        font-family: "sans-serif";
+        font-weight: bold;
+        padding: 0px;
+        margin: 0px;
+      }
+      td.controls.arrows {
+        width: 8%;
+      }
+      td.controls.links {
+        width: 28%;
+      }
+      .coursename {
+        font-size: 100%;
+      }
+      .subtitle {
+        font-size: 75%;
+      }
+      .schedarea > .sched.week {
+        font-size: 120%;
+      }
+      @media print {
+        .controls {
+          display: none;
+        }
+      }
+      @media screen and (orientation: portrait) and (min-height: 1000px) {
+        .sched.today {
+          font-size: 250%;
+        }
+        td.controls {
+          font-size: 175%;
+        }
+      }
+      @media screen and (orientation: landscape) and (max-height: 500px) {
+        td.controls {
+          font-size: 150%;
+        }
+      }
+      @media screen and (orientation: portrait) and (max-height: 1000px) {
+        .sched.today {
+          font-size: 200%;
+        }
+        td.controls {
+          font-size: 150%;
+        }
+      }
+      @media screen and (orientation: landscape) and (min-height: 500px) {
+        td.controls {
+          font-size: 100%;
+        }
+      }
+      .daylabel a, .daylabel a:visited {
+        color: black;
+      }
+      .specialday {
+        padding: 0;
+      }
+      .specialday > .sched {
+        height: 100%;
+        width: 100%;
+      }
+      .specialday > .sched tr:first-child td {
+        border-top: 0;
+      }
+      .specialday > .sched tr td:first-child {
+        border-left: 0;
+      }
+      .specialday > .sched tr td:last-child{
+        border-right: 0;
+      }
+    </style>
+  </head>
+`;
+let schedule = `
+  <body data-gr-c-s-loaded="true" class="vsc-initialized" style="">
+    <table class="controls">
+      <tbody>
+        <tr>
+          <td class="controls arrows">
+            <a><img src="http://inside.catlin.edu/scripts/sched/left48.png"></a>
+          </td>
+          <td class="controls links">
+            <a href="https://portals.veracross.com/catlin/student/student/daily-schedule">Today</a>
+          </td>
+          <td class="controls links">
+            <a href="?">This Week</a>
+          </td>
+          <td class="controls links">
+            <a>Return To Portal</a>
+          </td>
+          <td class="controls arrows">
+            <a><img src="http://inside.catlin.edu/scripts/sched/right48.png"></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <hr class="controls">
+    <div id="schedarea">
+      <table class="sched week main">
+        <tbody>
+          <tr>
+            <td class="mainlabel"><b></b></td>
+          </tr>
+          <tr class="mins45">
+            <td class="times mins45">8:00-8:45</td>
+          </tr>
+          <tr class="mins25">
+            <td class="times mins25">8:45-9:15</td>
+          </tr>
+          <tr class="mins10">
+            <td class="times mins10">9:20-9:30</td>
+          </tr>
+          <tr class="mins10">
+            <td class="times mins10">9:30-9:40</td>
+          </tr>
+          <tr class="mins45">
+            <td class="times mins45">9:45-10:30</td>
+          </tr>
+          <tr class="mins45">
+            <td class="times mins45">10:35-11:20</td>
+          </tr>
+          <tr class="mins25">
+            <td class="times mins25">11:20-11:50</td>
+          </tr>
+          <tr class="mins35">
+            <td class="times mins35">11:55-12:30</td>
+          </tr>
+          <tr class="mins35">
+            <td class="times mins35">12:30-1:05</td>
+          </tr>
+          <tr class="mins25">
+            <td class="times mins25">1:10-1:40</td>
+          </tr>
+          <tr class="mins45">
+            <td class="times mins45">1:40-2:25</td>
+          </tr>
+          <tr class="mins45">
+            <td class="times mins45">2:30-3:15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+`;
 
-
-
-if (window.location.href.match(/legacy/)) {
-  loadBetterSchedule();
-} else {
-  window.onload = function () {
-    $("div.vx-Tabs").append("<a class=\"vx-Tab_Item \" onclick=\"window.location='legacy'+window.location.search;\" style=\" color: #ff5959; \"><div class=\"vx-Tab_Icon\"> <i class=\"nc-icon-glyph media-1_flash-21\"></i></div><div class=\"vx-Tab_Description\">CGS Schedule</div> </a>");
-  }
-}
-
-function loadBetterSchedule() {
-  $("head").html(scheduleHead);
-  $("body").html(scheduleBody);
-
-  var url = new URL(window.location.href);
-  var date = url.searchParams.get("date");
-
-  let seedDate = new Date();
-  if (date !== null) {
-    seedDate = new Date(date);
-  }
-
-  let lastFriday = getLastFriday(seedDate);
-  lastFriday.setDate(lastFriday.getDate() + 3);
-  loadWeek(new Date(lastFriday));
-
-  let previousMonday = new Date(lastFriday)
-  previousMonday.setDate(lastFriday.getDate() - 7);
-  $("td.arrows a").first().prop("href", "?date="+dateToVeracrossDate(previousMonday))
-
-  let nextMonday = new Date(lastFriday)
-  nextMonday.setDate(lastFriday.getDate() + 7);
-  $("td.arrows a").last().prop("href", "?date="+dateToVeracrossDate(nextMonday))
-
-  $("td.links a").last().prop("href", "/catlin/student/student/daily-schedule?date="+dateToVeracrossDate(seedDate));
-
-}
-
-function loadWeek(mondayDate) {
-  $("table").hide();
-  Promise.all(getVeracrossWeekDateStrings(mondayDate).map(getScheduleForDate)).then((results) => {
-    results.forEach(appendDay);
-    $(".mainlabel b").text(mainlabel);
-    $("table").show();
-  });
-}
-
-function appendDay(daySchedule) {
-  console.log(daySchedule)
-  var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  $("table.sched.main > tbody > tr:nth-child("+1+")").append("<td class=\"daylabel\"><a href=\"/catlin/student/student/daily-schedule?date="+dateToVeracrossDate(daySchedule.date)+"\"><b>"+days[daySchedule.date.getDay()]+" "+months[daySchedule.date.getMonth()]+" "+daySchedule.date.getDate()+(!daySchedule.letter?"":" ("+daySchedule.letter+")")+"</b></a></td>");
+const appendDay = daySchedule => {
+  let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  $('table.sched.main > tbody > tr:nth-child(' + 1 + ')').append(`
+    <td class="daylabel">
+      <a href="/catlin/student/student/daily-schedule?date=${ dateToVeracrossDate(daySchedule.date) }">
+        <b>
+          ${ days[daySchedule.date.getDay()] } ${ months[daySchedule.date.getMonth()] } ${ daySchedule.date.getDate() + (!daySchedule.letter ? '' : ` (${ daySchedule.letter })`) }
+        </b>
+      </a>
+    </td>
+  `);
   if (isEmptyDay(daySchedule)) {
-    addSpecialDay("No Events", colorDict["free"]);
+    addSpecialDay('No Events', colorDict['free']);
   } else if (isNormalDay(daySchedule)) {
     addTableData(applyCustomRules(prepTableDataDay(trimDay(daySchedule))));
   } else {
-    //addSpecialDay("Special Schedule", colorDict[0], "/catlin/student/student/daily-schedule?date="+dateToVeracrossDate(daySchedule.date));
     addInlineDay(applyCustomRules(trimDay(daySchedule)));
   }
-}
+};
 
-function applyCustomRules(daySchedule) {
-  if (mainlabel === "Liam Wang") {
-    daySchedule.blocks.forEach((block) => {
-      if (block.title === "Co-Curric" && daySchedule.letter === "B") {
-        block.title = "Robotics Meeting";
-        block.subtitle = "Gerlinger"
+const applyCustomRules = daySchedule => {
+  if (managers.includes(mainlabel)) {
+    daySchedule.blocks.forEach(block => {
+      if (block.title === 'Co-Curric' && daySchedule.letter === 'B') {
+        block.title = 'Robotics Meeting';
+        block.subtitle = 'Gerlinger';
         block.free = false;
-      }
-      if (block.title === "Co-Curric" && daySchedule.letter === "F") {
-        block.title = "Robotics Manager's Meeting";
-        block.subtitle = "Lib 4"
+      } else if (block.title === 'Co-Curric' && daySchedule.letter === 'F') {
+        block.title = 'Robotics Manager\'s Meeting';
+        block.subtitle = 'Lib 4';
         block.free = false;
       }
     });
   }
   return daySchedule;
+};
+
+if (window.location.href.match(/legacy/)) {
+  $('head').html(head);
+  $('body').html(schedule);
+
+  const date = new URL(window.location.href).searchParams.get("date");
+  const seedDate = date !== null ? new Date(date) : new Date();
+  const lastFriday = getLastFriday(seedDate);
+  const previousMonday = new Date(lastFriday);
+  const nextMonday = new Date(lastFriday);
+
+  previousMonday.setDate(lastFriday.getDate() - 7);
+  nextMonday.setDate(lastFriday.getDate() + 7);
+  $('table').hide();
+  Promise.all(getVeracrossWeekDateStrings(new Date(lastFriday.setDate(lastFriday.getDate() + 3))).map(getScheduleForDate)).then(res => {
+    res.forEach(appendDay);
+    $('.mainlabel b').text(mainlabel);
+    $('table').show();
+  });
+
+  $('td.arrows a')
+    .first()
+    .prop('href', '?date=' + dateToVeracrossDate(previousMonday))
+    .last()
+    .prop('href', '?date=' + dateToVeracrossDate(nextMonday))
+    .last()
+    .prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
+} else {
+  window.onload = () => $('div.vx-Tabs').append(`
+    <a class="vx-Tab_Item" onclick="window.location = 'legacy' + window.location.search;" style="color: #ff5959;">
+      <div class="vx-Tab_Icon">
+        <i class="nc-icon-glyph media-1_flash-21"></i>
+      </div>
+      <div class="vx-Tab_Description">CGS Schedule</div>
+    </a>
+  `);
 }
 
 function getVeracrossWeekDateStrings(mondayDate) {
-  let dates = []
-  for (let i=0; i<5; i++) {
+  let dates = [];
+  for (let i = 0; i < 5; i++) {
     dates.push(dateToVeracrossDate(mondayDate));
     mondayDate.setDate(mondayDate.getDate() + 1);
   }
