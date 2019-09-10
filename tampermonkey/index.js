@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Veracross CGS Schedule
-// @version      0.11
+// @version      0.13.1
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
 // @match        https://portals.veracross.com/catlin/student/student*
@@ -45,6 +45,11 @@ let normalAllTimes = normalTimes.concat([schoolEndTime]);
 let head = `
   <head>
     <title>CGS Schedule</title>
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 11:00:00 GMT">
+    <meta http-equiv="pragma" content="no-cache">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="https://inside.catlin.edu/scripts/sched/favicon.ico">
     <style type="text/css">
@@ -411,6 +416,7 @@ if (window.location.href.match(/legacy/)) {
     .prop('href', '?date=' + dateToVeracrossDate(nextMonday))
     .last()
     .prop('href', '/catlin/student/student/daily-schedule?date=' + dateToVeracrossDate(seedDate));
+  window.onload = () => $('body > .dialog').remove();
 } else {
   window.onload = () => $('div.vx-Tabs').append(`
     <a class="vx-Tab_Item" onclick="window.location = 'legacy' + window.location.search;" style="color: #ff5959;">
