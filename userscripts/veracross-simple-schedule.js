@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Veracross CGS Schedule
-// @version      0.16.3
+// @version      0.17
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
 // @namespace    https://greasyfork.org/users/118299
@@ -628,8 +628,7 @@ const parseVeracrossDate = timeString => {
 };
 
 if (window.location.href.match(/legacy/)) {
-  $('head').html(head);
-  $('body').html(schedule);
+  document.documentElement.innerHTML = "<head>"+head+"</head><body>"+schedule+"</body>";
 
   const date = new URL(window.location.href).searchParams.get("date");
   const seedDate = date !== null ? new Date(date) : new Date();
