@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Veracross CGS Schedule
-// @version      0.18
+// @version      0.19
 // @description  Bring the old CGS schedule view to the Veracross student schedule.
 // @author       Liam Wang & Tristan Peng
 // @namespace    https://greasyfork.org/users/118299
