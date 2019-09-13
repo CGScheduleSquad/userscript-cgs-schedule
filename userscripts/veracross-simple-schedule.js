@@ -658,7 +658,7 @@ function isNormalDay(daySchedule) {
     return daySchedule.blocks.every(block => {
         let startHours = block.startTime.getHours();
         let startMinutes = block.startTime.getMinutes();
-        if (startHours < 8 || startHours >= 12 + 3) return true;
+        if (isNaN(startHours) || startHours < 8 || startHours >= 12 + 3) return true;
         return normalTimes.some(time => startHours === time.getHours() && startMinutes === time.getMinutes());
     });
 }
