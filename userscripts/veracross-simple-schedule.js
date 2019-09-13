@@ -522,7 +522,7 @@ function appendDay(daySchedule) {
 function filterBlocks(daySchedule) { // removes blocks not between 12 and 3 and duplicates
     daySchedule.blocks = daySchedule.blocks.filter(block => {
         let startHours = block.startTime.getHours();
-        if (startHours < 8 || startHours >= 12 + 3) return false;
+        if (isNaN(startHours) || startHours < 8 || startHours >= 12 + 3) return false;
         return !daySchedule.blocks.some((otherBlock) => { // keep longer description one (TODO: show conflict)
             let sameTime = block.startTime.getTime() === otherBlock.startTime.getTime();
             return sameTime && (block.title.length < otherBlock.title.length || block.subtitle.length < otherBlock.subtitle.length);
